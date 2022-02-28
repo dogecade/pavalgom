@@ -1,29 +1,49 @@
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, TouchableHighlight } from 'react-native';
 import { useEffect, useState } from 'react';
 
 import { Text, View } from '../components/Themed';
 import { getRecipes } from '../api/recipes';
+import Card from './components/Card';
+import RECIPES from '../constants/Recipes';
 
-export default function TabOneScreen() {
+export default function TabOneScreen({navigation}) {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
     getRecipes().then((response) => setRecipes(response));
   }, []);
-  console.log(recipes);
+  // console.log(recipes);
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        {recipes.slice(0, 10).map((recipe) => (
-          <View style={styles.recipeContainer}>
-            <Text key={recipe.id} style={styles.title}>
-              {recipe.url}
-            </Text>
-            <Text key={recipe.id} style={styles.subTitle}>
-              {recipe.ingredients}
-            </Text>
-            <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      {/*<ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>*/}
+      {/*  {recipes.slice(0, 10).map((recipe, index) => (*/}
+      {/*    <View style={styles.recipeContainer} key={recipe.id + index}>*/}
+      {/*      <Card title={recipe.url} description={recipe.ingredients}/>*/}
+      {/*      /!*<Text style={styles.title}>*!/*/}
+      {/*      /!*  {recipe.url}*!/*/}
+      {/*      /!*</Text>*!/*/}
+      {/*      /!*<Text style={styles.subTitle}>*!/*/}
+      {/*      /!*  {recipe.ingredients}*!/*/}
+      {/*      /!*</Text>*!/*/}
+      {/*      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />*/}
+      {/*    </View>*/}
+      {/*  ))}*/}
+      {/*</ScrollView>*/}
+      <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        {RECIPES.map((recipe, index) => (
+          <View style={styles.recipeContainer} key={recipe.id + index}>
+            <TouchableHighlight
+              onPress={() => {
+                navigation.navigate('Details', {recipe})
+              }}
+            >
+              <Card
+                title={recipe.title}
+                image={recipe.img_url}
+                description={recipe.ingredients[0].name}
+              />
+            </TouchableHighlight>
           </View>
         ))}
       </ScrollView>
@@ -38,7 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   recipeContainer: {
-    padding: 12
+    padding: 12,
   },
   title: {
     fontSize: 20,
